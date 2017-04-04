@@ -1,13 +1,18 @@
 ﻿#undef UNICODE
 #include <windows.h>
 #include  <math.h>
+#include <vector>
+#include "Question.h"
+#include "Field.h"
+#include "Cell.h"
 
 using namespace std;
+
+static vector<Question> _questions;
 
 BOOL InitWnd1(HINSTANCE hinstance);
 BOOL InitInstance1(HINSTANCE hinstance, int nCmdShow);
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
-
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE prevHinstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	MSG msg;
@@ -59,24 +64,37 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
 	static int x, y;
 	static HDC hdc;
-	static bool isDirect, moves;
-
+	static Field field;
+	PAINTSTRUCT ps;
+	static RECT r;
 	switch (message)
 	{
 	case WM_CREATE:
+		GetClientRect(hwnd, &r);
+		x = r.right; y = r.bottom;
+		field = Field(x, y, 4);
+		break;
+	case WM_PAINT:
+		hdc = BeginPaint(hwnd, &ps);
+		field.prepareBackground(hdc);
+		EndPaint(hwnd, &ps);;
 		break;
 	case WM_SIZE:
-		x = LOWORD(lparam);
-		y = HIWORD(lparam);
+		GetClientRect(hwnd, &r);
+		x = r.right; y = r.bottom;
+		field = Field(x, y, 4);
+		field.prepareBackground(hdc);
 		break;
+	case WM_LBUTTONUP:
+	{
+		int k = field.getClickedCellNumber(LOWORD(lparam), HIWORD(lparam));
+	}
+	break;
 	case WM_CLOSE:
 		DestroyWindow(hwnd);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
-		break;
-	case WM_RBUTTONUP:
-		moves = !moves;
 		break;
 	default:
 		return DefWindowProc(hwnd, message, wparam, lparam);
