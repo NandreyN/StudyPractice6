@@ -1,5 +1,6 @@
 #include "Field.h"
 #include <algorithm>
+#define CHOSENCOLOR RGB(154,154,154)
 using namespace std;
 
 Field::Field()
@@ -36,7 +37,7 @@ int Field::getClickedCellNumber(int clickedX, int clickedY)
 		cellsDimensionY = ((double)_totalPixelsY / sqrt(_cells.size()));
 	int xCount = (clickedX / cellsDimensionX),
 		yCount = (clickedY / cellsDimensionY);
-	int i = 0, j = 0,counter = 0;
+	int i = 0, j = 0, counter = 0;
 
 	while (i != sqrt(_cells.size()) && j != sqrt(_cells.size()))
 	{
@@ -54,6 +55,17 @@ int Field::getClickedCellNumber(int clickedX, int clickedY)
 	return counter;
 }
 
+void Field::markCellSeen(HDC& hdc, int id)
+{
+	HBRUSH brush = CreateSolidBrush(CHOSENCOLOR);
+	HBRUSH old = (HBRUSH)SelectObject(hdc, brush);
+
+	FillRect(hdc, &_cells[id].getRect(), brush);
+	_cells[id].setColor(CHOSENCOLOR);
+	DeleteObject(brush);
+	SelectObject(hdc, old);
+}
+
 void Field::prepareBackground(HDC& hdc)
 {
 	HPEN pen = CreatePen(PS_COSMETIC, 2, BLACK_PEN);
@@ -61,7 +73,12 @@ void Field::prepareBackground(HDC& hdc)
 
 	for_each(_cells.begin(), _cells.end(), [&hdc](const Cell& cell)
 	{
+		HBRUSH brush = CreateSolidBrush(cell.getColor());
+		HBRUSH o = (HBRUSH)SelectObject(hdc, brush);
+
 		Rectangle(hdc, cell.getRect().left, cell.getRect().top, cell.getRect().right, cell.getRect().bottom);
+		DeleteObject(brush);
+		SelectObject(hdc, o);
 	});
 
 	SelectObject(hdc, old);

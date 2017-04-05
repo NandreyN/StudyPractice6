@@ -144,12 +144,25 @@
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Field.cpp" />
+    <ClCompile Include="RParser.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="Question.h" />
+    <ClInclude Include="RParser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q1.txt" />
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q2.txt" />
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q3.txt" />
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q4.txt" />
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q5.txt" />
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q6.txt" />
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q7.txt" />
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q8.txt" />
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q9.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

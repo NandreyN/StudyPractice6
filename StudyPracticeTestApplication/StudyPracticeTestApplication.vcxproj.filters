@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Testdata">
+      <UniqueIdentifier>{74bd3bd5-8c1f-4ffc-85fd-8dfd72dc7976}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -22,6 +25,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Field.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,5 +41,37 @@
     <ClInclude Include="Field.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q1.txt">
+      <Filter>Testdata</Filter>
+    </Text>
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q2.txt">
+      <Filter>Testdata</Filter>
+    </Text>
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q3.txt">
+      <Filter>Testdata</Filter>
+    </Text>
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q4.txt">
+      <Filter>Testdata</Filter>
+    </Text>
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q5.txt">
+      <Filter>Testdata</Filter>
+    </Text>
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q6.txt">
+      <Filter>Testdata</Filter>
+    </Text>
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q7.txt">
+      <Filter>Testdata</Filter>
+    </Text>
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q8.txt">
+      <Filter>Testdata</Filter>
+    </Text>
+    <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q9.txt">
+      <Filter>Testdata</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -5,9 +5,11 @@
 #include "Question.h"
 #include "Field.h"
 #include "Cell.h"
+#include "RParser.h"
 
 using namespace std;
 
+const int questionsCount = 3;
 static vector<Question> _questions;
 
 BOOL InitWnd1(HINSTANCE hinstance);
@@ -70,9 +72,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 	switch (message)
 	{
 	case WM_CREATE:
+		_questions = RParser::getQuestionsCollection(questionsCount);
 		GetClientRect(hwnd, &r);
 		x = r.right; y = r.bottom;
-		field = Field(x, y, 4);
+		field = Field(x, y, questionsCount);
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hwnd, &ps);
@@ -82,12 +85,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 	case WM_SIZE:
 		GetClientRect(hwnd, &r);
 		x = r.right; y = r.bottom;
-		field = Field(x, y, 4);
 		field.prepareBackground(hdc);
 		break;
 	case WM_LBUTTONUP:
 	{
 		int k = field.getClickedCellNumber(LOWORD(lparam), HIWORD(lparam));
+		field.markCellSeen(hdc, k);
+		InvalidateRect(hwnd, NULL, true);
 	}
 	break;
 	case WM_CLOSE:
