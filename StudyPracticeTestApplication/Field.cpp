@@ -1,7 +1,17 @@
+#pragma once
+#define DIALOG 101
+#define IDT_QTEXT 1001
+#define IDG_GROUP 1002
+
+#include <windows.h>
 #include "Field.h"
 #include <algorithm>
 #define CHOSENCOLOR RGB(154,154,154)
+#include <string>
+#include "Question.h"
 using namespace std;
+
+static Question _globalQ;
 
 Field::Field()
 {
@@ -66,6 +76,64 @@ void Field::markCellSeen(HDC& hdc, int id)
 	SelectObject(hdc, old);
 }
 
+BOOL Field::TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+{
+	static HWND Htext, HGroup;
+	static Question q;
+
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		q = _globalQ;
+		Htext = GetDlgItem(hwnd, IDT_QTEXT);
+		HGroup = GetDlgItem(hwnd, IDG_GROUP);
+		SetWindowText(Htext, q.text.data());
+		break;
+	case WM_COMMAND:
+		switch (LOWORD(wparam))
+		{
+		case IDOK:
+			EndDialog(hwnd, 0);
+			break;
+		case IDCANCEL:
+			EndDialog(hwnd, -1);
+			break;
+		}
+		break;
+	}
+	return FALSE;
+}
+
+void Field::initButtonList(HWND& hwnd, const Question& q, char mode)
+{
+	HWND area = GetDlgItem(hwnd, IDG_GROUP);
+	RECT rect; GetClientRect(hwnd, &rect);
+	int cellHeight = static_cast<double>(rect.bottom) / q.variants.size();
+	int cellWidht = rect.right;
+
+	switch (mode)
+	{
+	case 'r':
+	{
+		
+	}
+	break;
+	case 'c':
+	{
+
+	}
+	break;
+	}
+}
+
+void Field::handleCellAction(HWND& hwnd, HDC &hdc, int id, Question question)
+{
+	_globalQ = question;
+	int res = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(DIALOG), hwnd, Field::TextItemDialog);
+	if (res != -1)
+		this->markCellSeen(hdc, id);
+}
+
 void Field::prepareBackground(HDC& hdc)
 {
 	HPEN pen = CreatePen(PS_COSMETIC, 2, BLACK_PEN);
@@ -77,6 +145,8 @@ void Field::prepareBackground(HDC& hdc)
 		HBRUSH o = (HBRUSH)SelectObject(hdc, brush);
 
 		Rectangle(hdc, cell.getRect().left, cell.getRect().top, cell.getRect().right, cell.getRect().bottom);
+		SetBkMode(hdc, TRANSPARENT);
+		DrawText(hdc, to_string(cell.getNumber() + 1).data(), to_string(cell.getNumber()).size(), &cell.getRect(), DT_SINGLELINE | DT_VCENTER | DT_CENTER);
 		DeleteObject(brush);
 		SelectObject(hdc, o);
 	});

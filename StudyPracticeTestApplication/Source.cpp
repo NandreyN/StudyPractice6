@@ -90,7 +90,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 	case WM_LBUTTONUP:
 	{
 		int k = field.getClickedCellNumber(LOWORD(lparam), HIWORD(lparam));
-		field.markCellSeen(hdc, k);
+		field.handleCellAction(hwnd,hdc,k,_questions[k]);
 		InvalidateRect(hwnd, NULL, true);
 	}
 	break;

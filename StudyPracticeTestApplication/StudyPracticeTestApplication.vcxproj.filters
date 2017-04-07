@@ -44,6 +44,9 @@
     <ClInclude Include="RParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q1.txt">
@@ -73,5 +76,10 @@
     <Text Include="..\..\..\..\..\Документы\visual studio 2015\Projects\StudyPracticeTestApplication\Testdata\q9.txt">
       <Filter>Testdata</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="StudyPracticeTestApplication.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

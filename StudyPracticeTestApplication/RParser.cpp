@@ -17,9 +17,10 @@ std::vector<Question> RParser::getQuestionsCollection(int count)
 
 		vector<string> qText;
 		vector<int> qCorrect;
-		string rData;
+		string rData,text;
 		char mode = 0;
 
+		getline(input, text);
 		getline(input, rData);
 		mode = rData[0];
 		getline(input, rData);
@@ -35,6 +36,7 @@ std::vector<Question> RParser::getQuestionsCollection(int count)
 		q.mode = mode;
 		q.correct = qCorrect;
 		q.variants = qText;
+		q.text = text;
 		qCollection.push_back(q);
 		input.close();
 	}

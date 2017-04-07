@@ -3,6 +3,8 @@
 #include <vector>
 #include "Cell.h"
 
+struct Question;
+
 class Field
 {
 public:
@@ -10,9 +12,12 @@ public:
 	Field(int x, int y, int fieldDimension);
 	void prepareBackground(HDC& hdc);
 	int getClickedCellNumber(int, int);
-	void markCellSeen(HDC&,int);
+	void markCellSeen(HDC&, int);
+	void handleCellAction(HWND&, HDC&, int,Question);
 private:
 	std::vector<Cell> _cells;
 	int _totalPixelsX, _totalPixelsY;
+	static BOOL CALLBACK TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
+	void initButtonList(HWND& hwnd, const Question& q, char mode);
 };
 
