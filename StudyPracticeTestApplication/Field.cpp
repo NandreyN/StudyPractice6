@@ -2,6 +2,16 @@
 #define DIALOG 101
 #define IDT_QTEXT 1001
 #define IDG_GROUP 1003
+#define CHECKDIALOG 105
+#define RADIODIOALOG 103
+#define CHECK0 1010
+#define RADIO0 1004
+//#define CHECK1 1011
+//#define CHECK2 1012
+//#define CHECK3 1013
+//#define CHECK4 1014
+#define CTEXT 1015
+#define  RTEXT 1009
 
 #include <windows.h>
 #include "Field.h"
@@ -12,6 +22,7 @@
 using namespace std;
 
 static Question _globalQ;
+static vector<int> _answers;
 
 Field::Field()
 {
@@ -80,22 +91,61 @@ BOOL Field::TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam
 {
 	static HWND Htext, HGroup;
 	static Question q;
-
+	static vector<int> answers;
+	static int textBoxId, firstBId;
 	switch (message)
 	{
 	case WM_INITDIALOG:
 		q = _globalQ;
-		Htext = GetDlgItem(hwnd, IDT_QTEXT);
-		SetWindowText(Htext, q.text.data());
+
+		switch (q.mode)
+		{
+		case 'c':
+			textBoxId = CTEXT;
+			firstBId = CHECK0;
+			break;
+		case 'r':
+			textBoxId = RTEXT;
+			firstBId = RADIO0;
+		default:
+			EndDialog(hwnd, -1);
+			throw "Unknown task type";
+		}
+
+		if (q.variants.size() > 5)
+		{
+			EndDialog(hwnd, -1);
+			throw "Too many variants";
+		}
+
+		int i; i = 0;
+		for (; i < q.variants.size(); i++)
+		{
+			HWND handle = GetDlgItem(hwnd, firstBId + i);
+			SetWindowText(handle, q.variants[i].data());
+		}
+
+		if (i <= 4)
+			for (; i < 5; i++)
+				ShowWindow(GetDlgItem(hwnd, firstBId + i), HIDE_WINDOW);
+
+		SetWindowText(GetDlgItem(hwnd, textBoxId), q.text.data());
 		break;
 	case WM_COMMAND:
 		switch (LOWORD(wparam))
 		{
 		case IDOK:
+			// To get marked 
+			for (int j = 0; j < q.variants.size(); j++)
+			{
+				bool isMarked = IsDlgButtonChecked(hwnd, firstBId + j);
+				if (isMarked) answers.push_back(j + 1);
+			}
+			_answers = answers;
 			EndDialog(hwnd, 0);
 			break;
 		case IDCANCEL:
-			EndDialog(hwnd, -1);
+			EndDialog(hwnd, -2);
 			break;
 		}
 		break;
@@ -106,9 +156,25 @@ BOOL Field::TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam
 void Field::handleCellAction(HWND& hwnd, HDC &hdc, int id, Question question)
 {
 	_globalQ = question;
-	int res = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(DIALOG), hwnd, Field::TextItemDialog);
-	if (res != -1)
+	int dialogID = (question.mode == 'c') ? CHECKDIALOG : RADIODIOALOG;
+	_answers.clear();
+
+	int res = -2;
+	try
+	{
+		res = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(dialogID), hwnd, Field::TextItemDialog);
+	}
+	catch (char* errMsg)
+	{
+		MessageBox(NULL, "Error", errMsg, MB_OK);
+		return;
+	}
+	if (res >= 0)
 		this->markCellSeen(hdc, id);
+	if (question.correct == _answers)
+		MessageBox(NULL, "Correct", "Correct", MB_OK);
+	if (res == 0)
+		MessageBox(NULL, "Info", "Answered", MB_OK);
 }
 
 void Field::prepareBackground(HDC& hdc)
