@@ -146,6 +146,7 @@
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="RParser.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cell.h" />

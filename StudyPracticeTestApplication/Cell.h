@@ -10,6 +10,7 @@ public:
 	RECT getRect() const;
 	void setColor(long color);
 	long getColor() const;
+	bool isCorrect() const;
 private:
 	RECT _cellRect;
 	int _orderNumber;

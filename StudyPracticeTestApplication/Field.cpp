@@ -16,7 +16,6 @@
 #include <windows.h>
 #include "Field.h"
 #include <algorithm>
-#define CHOSENCOLOR RGB(154,154,154)
 #include <string>
 #include "Question.h"
 using namespace std;
@@ -82,7 +81,7 @@ void Field::markCellSeen(HDC& hdc, int id, COLORREF color)
 	HBRUSH old = (HBRUSH)SelectObject(hdc, brush);
 
 	FillRect(hdc, &_cells[id].getRect(), brush);
-	_cells[id].setColor(CHOSENCOLOR);
+	_cells[id].setColor(color);
 	DeleteObject(brush);
 	SelectObject(hdc, old);
 }
@@ -91,7 +90,7 @@ BOOL Field::TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam
 {
 	static HWND Htext, HGroup;
 	static Question q;
-	static vector<int> answers;
+	vector<int> answers;
 	static int textBoxId, firstBId;
 	switch (message)
 	{
