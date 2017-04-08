@@ -76,9 +76,9 @@ int Field::getClickedCellNumber(int clickedX, int clickedY)
 	return counter;
 }
 
-void Field::markCellSeen(HDC& hdc, int id)
+void Field::markCellSeen(HDC& hdc, int id, COLORREF color)
 {
-	HBRUSH brush = CreateSolidBrush(CHOSENCOLOR);
+	HBRUSH brush = CreateSolidBrush(color);
 	HBRUSH old = (HBRUSH)SelectObject(hdc, brush);
 
 	FillRect(hdc, &_cells[id].getRect(), brush);
@@ -107,6 +107,7 @@ BOOL Field::TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam
 		case 'r':
 			textBoxId = RTEXT;
 			firstBId = RADIO0;
+			break;
 		default:
 			EndDialog(hwnd, -1);
 			throw "Unknown task type";
@@ -169,12 +170,13 @@ void Field::handleCellAction(HWND& hwnd, HDC &hdc, int id, Question question)
 		MessageBox(NULL, "Error", errMsg, MB_OK);
 		return;
 	}
-	if (res >= 0)
-		this->markCellSeen(hdc, id);
-	if (question.correct == _answers)
-		MessageBox(NULL, "Correct", "Correct", MB_OK);
+
+	COLORREF fillColor;
 	if (res == 0)
-		MessageBox(NULL, "Info", "Answered", MB_OK);
+	{
+		fillColor = (_answers == question.correct) ? RGB(0, 255, 0) : RGB(255, 0, 0);
+		this->markCellSeen(hdc, id, fillColor);
+	}
 }
 
 void Field::prepareBackground(HDC& hdc)
