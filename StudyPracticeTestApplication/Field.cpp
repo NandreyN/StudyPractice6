@@ -1,7 +1,7 @@
 #pragma once
 #define DIALOG 101
 #define IDT_QTEXT 1001
-#define IDG_GROUP 1002
+#define IDG_GROUP 1003
 
 #include <windows.h>
 #include "Field.h"
@@ -86,7 +86,6 @@ BOOL Field::TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam
 	case WM_INITDIALOG:
 		q = _globalQ;
 		Htext = GetDlgItem(hwnd, IDT_QTEXT);
-		HGroup = GetDlgItem(hwnd, IDG_GROUP);
 		SetWindowText(Htext, q.text.data());
 		break;
 	case WM_COMMAND:
@@ -102,28 +101,6 @@ BOOL Field::TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam
 		break;
 	}
 	return FALSE;
-}
-
-void Field::initButtonList(HWND& hwnd, const Question& q, char mode)
-{
-	HWND area = GetDlgItem(hwnd, IDG_GROUP);
-	RECT rect; GetClientRect(hwnd, &rect);
-	int cellHeight = static_cast<double>(rect.bottom) / q.variants.size();
-	int cellWidht = rect.right;
-
-	switch (mode)
-	{
-	case 'r':
-	{
-		
-	}
-	break;
-	case 'c':
-	{
-
-	}
-	break;
-	}
 }
 
 void Field::handleCellAction(HWND& hwnd, HDC &hdc, int id, Question question)

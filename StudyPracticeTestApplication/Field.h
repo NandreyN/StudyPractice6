@@ -18,6 +18,6 @@ private:
 	std::vector<Cell> _cells;
 	int _totalPixelsX, _totalPixelsY;
 	static BOOL CALLBACK TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
-	void initButtonList(HWND& hwnd, const Question& q, char mode);
+	static void initButtonList(HWND& hwnd, const Question& q);
 };
 
