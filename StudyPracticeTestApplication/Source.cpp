@@ -65,6 +65,7 @@ BOOL InitWnd1(HINSTANCE hinstance)
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
 	static int x, y;
+	static bool isPassed;
 	static HDC hdc;
 	static Field field;
 	PAINTSTRUCT ps;
@@ -72,6 +73,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 	switch (message)
 	{
 	case WM_CREATE:
+		isPassed = false;
 		_questions = RParser::getQuestionsCollection(questionsCount);
 		GetClientRect(hwnd, &r);
 		x = r.right; y = r.bottom;
@@ -89,9 +91,23 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 		break;
 	case WM_LBUTTONUP:
 	{
+		if (isPassed)
+		{
+			string msg = "You have passed the test, your mark is : " + to_string(field.getMark());
+			MessageBox(NULL, msg.data(), "Info", MB_OK);
+			return FALSE;
+		};
+
 		int k = field.getClickedCellNumber(LOWORD(lparam), HIWORD(lparam));
-		field.handleCellAction(hwnd,hdc,k,_questions[k]);
+		field.handleCellAction(hwnd, hdc, k, _questions[k]);
 		InvalidateRect(hwnd, NULL, true);
+		isPassed = field.isPassed();
+		if (isPassed)
+		{
+			string msg = "You have passed the test, your mark is : " + to_string(field.getMark());
+			MessageBox(NULL, msg.data(), "Info", MB_OK);
+			return FALSE;
+		};
 	}
 	break;
 	case WM_CLOSE:

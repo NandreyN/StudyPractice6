@@ -6,10 +6,7 @@
 #define RADIODIOALOG 103
 #define CHECK0 1010
 #define RADIO0 1004
-//#define CHECK1 1011
-//#define CHECK2 1012
-//#define CHECK3 1013
-//#define CHECK4 1014
+
 #define CTEXT 1015
 #define  RTEXT 1009
 
@@ -18,6 +15,8 @@
 #include <algorithm>
 #include <string>
 #include "Question.h"
+#include <numeric>
+
 using namespace std;
 
 static Question _globalQ;
@@ -48,6 +47,11 @@ Field::Field(int x, int y, int fieldDimension)
 			_cells.push_back(Cell(rectangle, idCount));
 			++idCount;
 		}
+	}
+	_areCorrect = vector<bool>(pow(fieldDimension, 2)); _arePassed = vector<bool>(pow(fieldDimension, 2));
+	for (int i = 0; i < pow(fieldDimension, 2); i++)
+	{
+		_areCorrect[i] = false; _arePassed[i] = false;
 	}
 }
 
@@ -155,6 +159,7 @@ BOOL Field::TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam
 
 void Field::handleCellAction(HWND& hwnd, HDC &hdc, int id, Question question)
 {
+	if (_arePassed[id]) return;
 	_globalQ = question;
 	int dialogID = (question.mode == 'c') ? CHECKDIALOG : RADIODIOALOG;
 	_answers.clear();
@@ -173,9 +178,30 @@ void Field::handleCellAction(HWND& hwnd, HDC &hdc, int id, Question question)
 	COLORREF fillColor;
 	if (res == 0)
 	{
+		_arePassed[id] = true;
 		fillColor = (_answers == question.correct) ? RGB(0, 255, 0) : RGB(255, 0, 0);
+		if (_answers == question.correct) _areCorrect[id] = true;
 		this->markCellSeen(hdc, id, fillColor);
 	}
+}
+
+int Field::getMark() const
+{
+	double perTask = 10.0 / _areCorrect.size();
+	double res = 0.0;
+	for_each(_areCorrect.begin(), _areCorrect.end(), [perTask, &res](bool p)
+	{
+		if (p)
+			res += perTask;
+	});
+	return res;
+}
+
+bool Field::isPassed() const
+{
+	for (int i = 0; i < _arePassed.size(); i++)
+		if (!_arePassed[i]) return false;
+	return true;
 }
 
 void Field::prepareBackground(HDC& hdc)
