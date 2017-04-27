@@ -16,11 +16,15 @@
 #include <string>
 #include "Question.h"
 #include <numeric>
+#include <set>
+#include <iterator>
+#include <map>
 
 using namespace std;
 
 static Question _globalQ;
 static vector<int> _answers;
+static map<int,pair<int , int>> _testAnswers;// key = qNUmber , pair <Total , Selected> 
 
 Field::Field()
 {
@@ -48,11 +52,9 @@ Field::Field(int x, int y, int fieldDimension)
 			++idCount;
 		}
 	}
-	_areCorrect = vector<bool>(pow(fieldDimension, 2)); _arePassed = vector<bool>(pow(fieldDimension, 2));
+	_arePassed = vector<bool>();
 	for (int i = 0; i < pow(fieldDimension, 2); i++)
-	{
-		_areCorrect[i] = false; _arePassed[i] = false;
-	}
+		_arePassed.push_back(false);
 }
 
 int Field::getClickedCellNumber(int clickedX, int clickedY)
@@ -179,22 +181,43 @@ void Field::handleCellAction(HWND& hwnd, HDC &hdc, int id, Question question)
 	if (res == 0)
 	{
 		_arePassed[id] = true;
-		fillColor = (_answers == question.correct) ? RGB(0, 255, 0) : RGB(255, 0, 0);
-		if (_answers == question.correct) _areCorrect[id] = true;
+		//fillColor = (_answers == question.correct) ? RGB(0, 255, 0) : RGB(255, 0, 0);
+		if (_answers == question.correct)
+		{
+			_testAnswers[id] = pair<int, int>(question.correct.size(), _answers.size());
+			fillColor = RGB(0, 255, 0);
+		}
+		
+		set<int> correctSet(question.correct.begin(), question.correct.end());
+		set<int> gotAnsw(_answers.begin(), _answers.end());
+		set<int> intersaction;
+		set_intersection(correctSet.begin(), correctSet.end(),
+			gotAnsw.begin(), gotAnsw.end(), inserter(intersaction, intersaction.begin()));
+		// intersaction
+		if (_answers != question.correct && intersaction.size() != 0)
+		{
+			fillColor = RGB(250,137,0);
+			_testAnswers[id] = pair<int, int>(question.correct.size(), intersaction.size());
+		}
+		if (_answers != question.correct && intersaction.size() == 0)
+		{
+			fillColor = RGB(255,0,0);
+			_testAnswers[id] = pair<int, int>(question.correct.size(), 0);
+		}
 		this->markCellSeen(hdc, id, fillColor);
 	}
 }
 
 int Field::getMark() const
 {
-	double perTask = 10.0 / _areCorrect.size();
-	double res = 0.0;
-	for_each(_areCorrect.begin(), _areCorrect.end(), [perTask, &res](bool p)
+	double totalMark = 0;
+	double perTask = (double)10 / _arePassed.size();
+	
+	for_each(_testAnswers.begin(), _testAnswers.end(), [&totalMark, perTask](const pair<int ,pair<int , int>> p )
 	{
-		if (p)
-			res += perTask;
+		totalMark += perTask * ((double)p.second.second / (double)p.second.first);
 	});
-	return res;
+	return round(totalMark);
 }
 
 bool Field::isPassed() const

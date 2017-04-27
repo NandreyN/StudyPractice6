@@ -19,7 +19,7 @@ public:
 private:
 	std::vector<Cell> _cells;
 	int _totalPixelsX, _totalPixelsY;
-	std::vector<bool> _areCorrect, _arePassed;
+	std::vector<bool>  _arePassed;
 	static BOOL CALLBACK TextItemDialog(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 };
 
